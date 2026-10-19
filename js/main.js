@@ -78,7 +78,14 @@
   }
   initReveals();
 
-  /* ---------- NOSSA HISTÓRIA — pin + crossfade (scrub-driven, cada imagem com janela garantida) ---------- */
+  /* ---------- NOSSA HISTÓRIA ----------
+     Desktop (> 768px): pin do GSAP/ScrollTrigger + crossfade scrub-driven,
+     exatamente como antes — intocado.
+     Mobile (<= 768px): pin de scroll é instável em navegadores mobile (barra
+     de endereço colapsando muda a viewport no meio do gesto), então aqui a
+     imagem fica fixa via position:sticky (CSS puro, ver style.css) e a troca
+     de imagem é feita por um IntersectionObserver simples, sem depender do
+     pin do ScrollTrigger. */
   function initHistoria() {
     var row = document.querySelector('.historia-row');
     var media = document.querySelector('.historia-media');
@@ -86,7 +93,34 @@
     var blocks = document.querySelectorAll('.historia-block');
     if (!row || !media || !images.length || !blocks.length) return;
 
-    if (hasGsap && window.ScrollTrigger) {
+    var MOBILE_QUERY = '(max-width: 768px)';
+
+    function activateImage(index) {
+      images.forEach(function (img, i) {
+        img.classList.toggle('is-active', i === index);
+      });
+    }
+
+    function initMobileHistoria() {
+      // garante que nenhuma opacity inline deixada pelo GSAP (timeline do
+      // desktop) atrapalhe o crossfade por classe no mobile
+      images.forEach(function (img) { img.style.opacity = ''; });
+      activateImage(0);
+
+      if (!('IntersectionObserver' in window)) return;
+
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          var idx = Array.prototype.indexOf.call(blocks, entry.target);
+          if (idx > -1) activateImage(idx);
+        });
+      }, { threshold: 0.5, rootMargin: '-15% 0px -15% 0px' });
+
+      blocks.forEach(function (b) { io.observe(b); });
+    }
+
+    function initDesktopHistoria() {
       var n = images.length;
 
       // Timeline normalizada (0 a n) e amarrada ao scroll via scrub — assim cada
@@ -113,6 +147,26 @@
       // garante que a última imagem termine totalmente visível e permaneça assim
       // até o fim da janela de scroll (sem corte abrupto no fim do pin)
       tl.to(images[n - 1], { opacity: 1, duration: 0.1, ease: 'none' }, n - 0.1);
+
+      return tl;
+    }
+
+    if (hasGsap && window.ScrollTrigger) {
+      var mm = gsap.matchMedia();
+
+      mm.add(MOBILE_QUERY, function () {
+        initMobileHistoria();
+      });
+
+      mm.add('(min-width: 769px)', function () {
+        var tl = initDesktopHistoria();
+        return function () {
+          if (tl.scrollTrigger) tl.scrollTrigger.kill();
+          tl.kill();
+        };
+      });
+    } else if (window.matchMedia(MOBILE_QUERY).matches) {
+      initMobileHistoria();
     } else {
       images[0].classList.add('is-active');
     }

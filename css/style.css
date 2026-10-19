@@ -111,6 +111,18 @@ p{margin:0 0 1rem;}
   .nav-toggle.open span:nth-child(1){transform:translateY(9px) rotate(45deg);}
   .nav-toggle.open span:nth-child(2){opacity:0;}
   .nav-toggle.open span:nth-child(3){transform:translateY(-9px) rotate(-45deg);}
+
+  /* BUG do menu ao rolar: .navbar.scrolled usa backdrop-filter, e qualquer
+     backdrop-filter/filter/transform num ancestral vira "containing block"
+     pra descendentes position:fixed. Como .nav-links é fixed só aqui no
+     mobile, assim que rolava a página o menu fullscreen (inset:0) parava de
+     se referir à viewport e passava a se referir só à caixinha do header
+     (.navbar), encolhendo o menu e cortando logo/itens. Por isso só ficava
+     certo bem no topo (antes de .scrolled ligar o blur). Desligando o
+     blur aqui (só no mobile) o menu volta a cobrir a tela inteira em
+     qualquer posição de scroll. Desktop não usa .nav-links fixed, então
+     mantém o blur normalmente (regra base intocada). */
+  .navbar.scrolled{backdrop-filter:none;-webkit-backdrop-filter:none;}
 }
 
 /* ============================================================
@@ -190,6 +202,20 @@ p{margin:0 0 1rem;}
   .hero-figure{order:-1;margin-bottom:10px;}
 }
 
+/* mobile (até 768px): reduz a figura (estava enorme) e dá espaço vertical
+   próprio pro telefone e pro "role", que se sobrepunham aos botões.
+   Não altera nada acima de 768px (desktop/tablet seguem a regra de 900px acima). */
+@media (max-width:768px){
+  .hero-blob{width:min(220px,62%);}
+  .hero-caricatura-float{width:min(190px,54%);}
+  .hero-halftone{width:90px;height:90px;}
+  .hero-figure{margin-bottom:6px;}
+  .hero-phone{display:block;margin-top:20px;}
+  /* sem espaço vertical sobrando pro scroll-hint sem sobrepor telefone/botões:
+     remove do fluxo mobile (ele é só decorativo, aria-hidden) */
+  .scroll-hint{display:none;}
+}
+
 /* ============================================================
    2. NOSSA HISTÓRIA
    ============================================================ */
@@ -251,6 +277,27 @@ p{margin:0 0 1rem;}
   .historia-block{max-width:100%;}
 }
 
+/* mobile (até 768px): troca o pin do GSAP (instável em navegadores mobile,
+   com a barra de endereço colapsando e mudando a viewport) por um sticky
+   em CSS puro — a imagem some fixa numa faixa enquanto os 3 blocos de texto
+   passam por baixo. A troca de imagem ativa é feita via IntersectionObserver
+   no js/main.js (sem pin de ScrollTrigger no mobile). Desktop (acima de
+   768px) continua usando exatamente o mesmo pin + crossfade de sempre. */
+@media (max-width:768px){
+  .historia-row{display:block;}
+  .historia-media{
+    position:sticky;top:80px;height:42vh;padding:18px 20px 0;margin-bottom:0;z-index:1;
+  }
+  .historia-frame{height:40vh;}
+  .historia-frame img{transition:opacity .45s ease;}
+  .historia-text{display:flex;flex-direction:column;gap:0;padding:0 20px 36px;}
+  .historia-block{
+    min-height:58vh;display:flex;flex-direction:column;justify-content:center;
+    padding:26px 0;margin-bottom:0;
+  }
+  .historia-block:last-child{margin-bottom:0;}
+}
+
 /* ============================================================
    3. CATÁLOGO — esteiras
    ============================================================ */
@@ -290,9 +337,13 @@ p{margin:0 0 1rem;}
 
 .catalogo-cta{text-align:center;margin-top:40px;}
 
-@media (max-width:600px){
-  .brand-card{width:144px;height:102px;}
-  .brand-card img{max-height:64px;}
+@media (max-width:768px){
+  /* logos grandes demais no mobile, cabia pouco na esteira — reduz o card
+     e a imagem, e aperta o espaçamento, pra caber mais marcas visíveis ao
+     mesmo tempo. Desktop (acima de 768px) mantém o tamanho original. */
+  .marquee-track{gap:16px;}
+  .brand-card{width:112px;height:86px;padding:10px;}
+  .brand-card img{max-height:52px;}
 }
 
 /* ============================================================
