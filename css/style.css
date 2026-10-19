@@ -294,6 +294,12 @@ p{margin:0 0 1rem;}
    no js/main.js (sem pin de ScrollTrigger no mobile). Desktop (acima de
    768px) continua usando exatamente o mesmo pin + crossfade de sempre. */
 @media (max-width:768px){
+  /* .section tem overflow:hidden global (linha ~39), o que quebra
+     position:sticky dos descendentes (o ancestral com overflow!=visible
+     vira o "scroll container" de referência, e como quem rola de fato é a
+     página/body, não essa section, o sticky nunca gruda). Neutraliza só
+     verticalmente, mantendo o corte horizontal pra não vazar conteúdo. */
+  .historia.section{overflow-x:hidden;overflow-y:visible;}
   .historia-row{display:block;}
   .historia-media{
     position:sticky;top:80px;height:42vh;padding:18px 20px 0;margin-bottom:0;z-index:1;
