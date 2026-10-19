@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Baños Bebidas — Novo site, 2 opções para avaliação</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{ --amarelo:#EDCE3A; --preto:#111111; --creme:#F0EEE5; --cinza:#717069; }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Barlow',sans-serif;background:var(--creme);color:var(--preto);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;}
+  .wrap{max-width:780px;width:100%;text-align:center;}
+  h1{font-family:'Abril Fatface',serif;font-size:2rem;margin:0 0 12px;}
+  p.lead{color:var(--cinza);font-size:1.05rem;margin:0 0 40px;line-height:1.5;}
+  .opcoes{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;}
+  a.opcao{display:block;background:#fff;border-radius:16px;padding:36px 28px;text-decoration:none;color:var(--preto);box-shadow:0 4px 18px rgba(0,0,0,.1);border:3px solid transparent;transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;}
+  a.opcao:hover{transform:translateY(-6px);box-shadow:0 14px 30px rgba(0,0,0,.18);border-color:var(--amarelo);}
+  .num{font-family:'Abril Fatface',serif;font-size:2.6rem;color:var(--amarelo);-webkit-text-stroke:1.5px var(--preto);display:block;margin-bottom:10px;}
+  a.opcao h2{font-size:1.3rem;margin:0 0 8px;}
+  a.opcao p{color:var(--cinza);font-size:.92rem;margin:0;line-height:1.4;}
+  footer{margin-top:40px;color:var(--cinza);font-size:.8rem;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Novo site Baños Bebidas</h1>
+  <p class="lead">Preparamos 2 propostas de visual e navegação pra você avaliar. Clique em cada uma, navegue pelo celular e pelo computador, e nos diga qual prefere (ou o que gostaria de ajustar).</p>
+  <div class="opcoes">
+    <a class="opcao" href="opcao-1/index.html">
+      <span class="num">1</span>
+      <h2>Opção 1</h2>
+      <p>Visual mais arrojado e gráfico, com bastante movimento.</p>
+    </a>
+    <a class="opcao" href="opcao-2/index.html">
+      <span class="num">2</span>
+      <h2>Opção 2</h2>
+      <p>Visual mais caloroso e acolhedor, com a marca em destaque.</p>
+    </a>
+  </div>
+  <footer>Versão de avaliação — algumas fotos e vídeos ainda são provisórios e serão substituídos pelos materiais oficiais.</footer>
+</div>
+</body>
+</html>
