@@ -105,19 +105,61 @@
       // garante que nenhuma opacity inline deixada pelo GSAP (timeline do
       // desktop) atrapalhe o crossfade por classe no mobile
       images.forEach(function (img) { img.style.opacity = ''; });
-      activateImage(0);
 
-      if (!('IntersectionObserver' in window)) return;
+      // BUG relatado: só a 1ª foto aparecia, as outras 2 nunca trocavam.
+      // Causa: a troca dependia de um IntersectionObserver com um único
+      // threshold (0.5) + rootMargin que encolhia a "janela" de observação.
+      // Como a imagem é sticky e ocupa uma faixa fixa no topo, o espaço
+      // realmente visível pra cada bloco de texto é bem menor que a altura
+      // do próprio bloco (min-height:58vh) — então a razão de interseção
+      // de um bloco nunca alcançava 0.5 (o cálculo dependia da altura real
+      // do bloco vs. o tamanho do viewport, que varia com texto/fonte/
+      // tamanho de tela), e o callback nunca disparava de novo pros blocos
+      // 2 e 3. Resultado: ficava preso na 1ª imagem pra sempre.
+      //
+      // Troca por uma lógica mais simples e robusta: a cada scroll (com
+      // throttle via rAF), comparamos a posição de TODOS os blocos e
+      // ativamos sempre o que estiver mais perto de uma linha de
+      // referência logo abaixo da imagem fixa. Não depende de altura de
+      // bloco, de threshold, nem de rootMargin — funciona em qualquer
+      // tamanho de tela/fonte.
+      var current = -1;
+      var ticking = false;
 
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          if (!entry.isIntersecting) return;
-          var idx = Array.prototype.indexOf.call(blocks, entry.target);
-          if (idx > -1) activateImage(idx);
+      function pickClosestBlock() {
+        ticking = false;
+        var referenceY = window.innerHeight * 0.55;
+        var bestIdx = 0;
+        var bestDist = Infinity;
+        blocks.forEach(function (b, i) {
+          var r = b.getBoundingClientRect();
+          var center = r.top + r.height / 2;
+          var dist = Math.abs(center - referenceY);
+          if (dist < bestDist) { bestDist = dist; bestIdx = i; }
         });
-      }, { threshold: 0.5, rootMargin: '-15% 0px -15% 0px' });
+        if (bestIdx !== current) {
+          current = bestIdx;
+          activateImage(bestIdx);
+        }
+      }
 
-      blocks.forEach(function (b) { io.observe(b); });
+      function onScrollOrResize() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(pickClosestBlock);
+      }
+
+      pickClosestBlock();
+      window.addEventListener('scroll', onScrollOrResize, { passive: true });
+      window.addEventListener('resize', onScrollOrResize, { passive: true });
+
+      // cleanup: usado pelo gsap.matchMedia quando a viewport deixa de
+      // bater com a media query mobile (ex: usuário gira o aparelho ou
+      // redimensiona a janela pra acima de 768px)
+      return function () {
+        window.removeEventListener('scroll', onScrollOrResize);
+        window.removeEventListener('resize', onScrollOrResize);
+      };
     }
 
     function initDesktopHistoria() {
@@ -155,7 +197,7 @@
       var mm = gsap.matchMedia();
 
       mm.add(MOBILE_QUERY, function () {
-        initMobileHistoria();
+        return initMobileHistoria();
       });
 
       mm.add('(min-width: 769px)', function () {

@@ -210,7 +210,17 @@ p{margin:0 0 1rem;}
   .hero-caricatura-float{width:min(190px,54%);}
   .hero-halftone{width:90px;height:90px;}
   .hero-figure{margin-bottom:6px;}
-  .hero-phone{display:block;margin-top:20px;}
+  /* mais respiro entre o telefone e os botões "Fazer pedido"/"Conhecer a
+     Baños" no mobile (20px ainda ficava grudado) + uma linha fina pra
+     separar visualmente os dois blocos. Só nesta media query (<=768px);
+     acima disso o telefone continua sem margem/separador, como sempre. */
+  .hero-phone{
+    display:block;margin-top:40px;padding-top:16px;position:relative;
+  }
+  .hero-phone::before{
+    content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+    width:52px;height:2px;background:rgba(255,255,255,.3);border-radius:2px;
+  }
   /* sem espaço vertical sobrando pro scroll-hint sem sobrepor telefone/botões:
      remove do fluxo mobile (ele é só decorativo, aria-hidden) */
   .scroll-hint{display:none;}
