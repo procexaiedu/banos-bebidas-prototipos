@@ -89,7 +89,10 @@
   function initHistoria() {
     var row = document.querySelector('.historia-row');
     var media = document.querySelector('.historia-media');
-    var images = document.querySelectorAll('.historia-media img');
+    // escopo em .img-stack (não .historia-media), senão pega também o <img>
+    // do selo .badge-stamp e desalinha os índices do crossfade (4 imgs em
+    // vez de 3, fazendo a 2ª/3ª foto nunca ativarem de verdade)
+    var images = document.querySelectorAll('.historia-frame .img-stack img');
     var blocks = document.querySelectorAll('.historia-block');
     if (!row || !media || !images.length || !blocks.length) return;
 

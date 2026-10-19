@@ -296,15 +296,24 @@ p{margin:0 0 1rem;}
 @media (max-width:768px){
   /* .section tem overflow:hidden global (linha ~39), o que quebra
      position:sticky dos descendentes (o ancestral com overflow!=visible
-     vira o "scroll container" de referência, e como quem rola de fato é a
-     página/body, não essa section, o sticky nunca gruda). Neutraliza só
-     verticalmente, mantendo o corte horizontal pra não vazar conteúdo. */
-  .historia.section{overflow-x:hidden;overflow-y:visible;}
+     vira o "scroll container" de referência, e como quem rola de fato é o
+     body, não essa section, o sticky nunca gruda). CONFIRMADO POR TESTE:
+     overflow-x:hidden sozinho NÃO basta — o browser normaliza overflow-y
+     pra "auto" quando só um eixo é visible (spec CSS), e "auto" ainda cria
+     um scroll container próprio que quebra o sticky do mesmo jeito que
+     "hidden". Só "overflow:visible" nos DOIS eixos resolve de fato (o
+     corte horizontal em mobile já é garantido pelo body, que tem
+     overflow-x:hidden global). */
+  .historia.section{overflow:visible;}
   .historia-row{display:block;}
   .historia-media{
-    position:sticky;top:80px;height:42vh;padding:18px 20px 0;margin-bottom:0;z-index:1;
+    position:sticky;top:72px;height:46vh;padding:16px 28px 26px;margin-bottom:0;z-index:1;
+    overflow:visible; /* a base tem overflow:hidden (p/ conter o img-stack no
+      desktop) — no mobile isso corta o selo/fita que vazam de propósito pra
+      fora de .historia-frame; o próprio .img-stack já tem overflow:hidden
+      (linha ~248), então as fotos continuam contidas certinho mesmo assim */
   }
-  .historia-frame{height:40vh;}
+  .historia-frame{height:36vh;}
   .historia-frame img{transition:opacity .45s ease;}
   .historia-text{display:flex;flex-direction:column;gap:0;padding:0 20px 36px;}
   .historia-block{
