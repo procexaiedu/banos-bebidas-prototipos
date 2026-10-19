@@ -146,7 +146,7 @@ p{margin:0 0 1rem;}
 
 .hero-figure{position:relative;display:flex;justify-content:center;align-items:center;}
 .hero-blob{
-  position:absolute;width:min(420px,90%);aspect-ratio:1/1;background:var(--yellow);
+  position:absolute;width:min(500px,100%);aspect-ratio:1/1;background:var(--yellow);
   border-radius:48% 52% 55% 45%/52% 48% 52% 48%;
   animation:blobMove 9s ease-in-out infinite;
   z-index:1;
@@ -155,7 +155,15 @@ p{margin:0 0 1rem;}
   0%,100%{border-radius:48% 52% 55% 45%/52% 48% 52% 48%;}
   50%{border-radius:55% 45% 48% 52%/45% 55% 45% 55%;}
 }
-.hero-caricatura{position:relative;z-index:2;width:min(440px,92%);filter:drop-shadow(0 20px 30px rgba(0,0,0,.35));}
+.hero-caricatura-float{
+  position:relative;z-index:2;width:min(440px,92%);
+  animation:heroFloat 6s ease-in-out infinite;
+}
+.hero-caricatura{display:block;width:100%;filter:drop-shadow(0 20px 30px rgba(0,0,0,.35));}
+@keyframes heroFloat{
+  0%,100%{transform:translateY(0) rotate(-1deg);}
+  50%{transform:translateY(-16px) rotate(1deg);}
+}
 .hero-halftone{
   position:absolute;width:140px;height:140px;border-radius:50%;
   background-image:radial-gradient(var(--white) 2px, transparent 2px);
@@ -548,6 +556,51 @@ p{margin:0 0 1rem;}
 .reveal.in{opacity:1;transform:none;}
 
 /* ============================================================
+   WHATSAPP FLUTUANTE — fixo em todas as páginas
+   ============================================================ */
+.whats-float{
+  position:fixed;right:28px;bottom:28px;z-index:900;
+  display:flex;align-items:center;justify-content:flex-end;
+}
+.whats-float a{
+  position:relative;z-index:2;
+  width:60px;height:60px;border-radius:50%;
+  background:#25D366;border:3px solid var(--black);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 10px 24px rgba(0,0,0,.3);
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s ease;
+}
+.whats-float a::before{
+  content:'';position:absolute;inset:-3px;border-radius:50%;
+  box-shadow:0 0 0 0 rgba(37,211,102,.55);
+  animation:whatsFloatPulse 2.4s ease-out infinite;
+  pointer-events:none;
+}
+.whats-float a:hover{transform:scale(1.08);box-shadow:0 14px 30px rgba(0,0,0,.35);}
+.whats-float-icon{width:30px;height:30px;fill:#fff;position:relative;z-index:1;}
+@keyframes whatsFloatPulse{
+  0%{box-shadow:0 0 0 0 rgba(37,211,102,.55);}
+  70%{box-shadow:0 0 0 18px rgba(37,211,102,0);}
+  100%{box-shadow:0 0 0 18px rgba(37,211,102,0);}
+}
+.whats-float-label{
+  position:absolute;right:76px;bottom:16px;
+  background:var(--black);color:var(--yellow);font-weight:700;font-size:.85rem;
+  white-space:nowrap;padding:10px 18px;border-radius:999px;
+  opacity:0;transform:translateX(10px);pointer-events:none;
+  transition:opacity .3s ease, transform .3s ease;
+  box-shadow:0 8px 20px rgba(0,0,0,.25);
+}
+.whats-float:hover .whats-float-label{opacity:1;transform:translateX(0);}
+
+@media (max-width:600px){
+  .whats-float{right:16px;bottom:16px;}
+  .whats-float a{width:52px;height:52px;}
+  .whats-float-icon{width:26px;height:26px;}
+  .whats-float-label{display:none;}
+}
+
+/* ============================================================
    CATALOGO.HTML — página completa de marcas
    ============================================================ */
 .cat-hero{
@@ -561,8 +614,9 @@ p{margin:0 0 1rem;}
 }
 
 .cat-nav{
-  position:sticky;top:76px;z-index:50;background:var(--white);border-bottom:2px solid var(--black);
+  position:sticky;top:60px;z-index:50;background:var(--white);border-bottom:2px solid var(--black);
   padding:14px 0;display:flex;gap:10px;flex-wrap:wrap;justify-content:center;
+  transition:top .35s ease;
 }
 .cat-nav a{
   font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;
