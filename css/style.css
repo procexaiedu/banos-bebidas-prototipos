@@ -276,24 +276,22 @@ p{margin:0 0 1rem;}
 .historia-block p{font-size:1.08rem;line-height:1.65;color:#2b2b2b;}
 .historia-block:last-child{margin-bottom:55vh;}
 
+/* mobile (até 900px — bloco ÚNICO, de propósito: dois blocos separados
+   (768 e 900) deixavam um buraco onde o CSS já virava "single column" mas
+   o JS (que usava 768px) ainda rodava o pin do GSAP, misturando layout
+   mobile com pin de desktop — era exatamente o "imagem solta rolando e
+   sobrepondo" relatado): troca o pin do GSAP (instável em navegadores
+   mobile, com a barra de endereço colapsando e mudando a viewport) por um
+   sticky em CSS puro — a imagem fica fixa numa faixa enquanto os 3 blocos
+   de texto passam por baixo. A troca de imagem é feita via scroll-position
+   no js/main.js (sem pin de ScrollTrigger no mobile). Desktop (acima de
+   900px) continua usando o mesmo pin + crossfade de sempre. O JS usa
+   EXATAMENTE este mesmo breakpoint (900px) — ver MOBILE_QUERY em main.js. */
 @media (max-width:900px){
-  .historia-row{grid-template-columns:1fr;}
-  .historia-media{height:56vh;position:relative;padding:36px 24px;}
-  .historia-frame{width:min(320px,86%);height:46vh;transform:rotate(-1deg);}
   .historia-frame::before{width:52%;left:20px;top:-14px;height:12px;}
   .historia-frame .badge-stamp{width:76px;height:76px;bottom:-12px;right:-14px;}
   .badge-stamp img{width:38px;}
-  .historia-text{padding:50px 24px;gap:60px;}
   .historia-block{max-width:100%;}
-}
-
-/* mobile (até 768px): troca o pin do GSAP (instável em navegadores mobile,
-   com a barra de endereço colapsando e mudando a viewport) por um sticky
-   em CSS puro — a imagem some fixa numa faixa enquanto os 3 blocos de texto
-   passam por baixo. A troca de imagem ativa é feita via IntersectionObserver
-   no js/main.js (sem pin de ScrollTrigger no mobile). Desktop (acima de
-   768px) continua usando exatamente o mesmo pin + crossfade de sempre. */
-@media (max-width:768px){
   /* .section tem overflow:hidden global (linha ~39), o que quebra
      position:sticky dos descendentes (o ancestral com overflow!=visible
      vira o "scroll container" de referência, e como quem rola de fato é o
@@ -313,7 +311,7 @@ p{margin:0 0 1rem;}
       fora de .historia-frame; o próprio .img-stack já tem overflow:hidden
       (linha ~248), então as fotos continuam contidas certinho mesmo assim */
   }
-  .historia-frame{height:36vh;}
+  .historia-frame{width:min(320px,86%);height:36vh;transform:rotate(-1deg);}
   .historia-frame img{transition:opacity .45s ease;}
   .historia-text{display:flex;flex-direction:column;gap:0;padding:0 20px 36px;}
   .historia-block{

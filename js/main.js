@@ -96,7 +96,12 @@
     var blocks = document.querySelectorAll('.historia-block');
     if (!row || !media || !images.length || !blocks.length) return;
 
-    var MOBILE_QUERY = '(max-width: 768px)';
+    // MESMO breakpoint do CSS (ver style.css ~linha 279): um descompasso
+    // entre o breakpoint do JS e o do layout CSS deixava uma faixa de
+    // largura onde o CSS já virava mobile (coluna única) mas o JS ainda
+    // rodava o pin do GSAP — causava a imagem "solta", rolando e
+    // sobrepondo em vez de ficar fixa.
+    var MOBILE_QUERY = '(max-width: 900px)';
 
     function activateImage(index) {
       images.forEach(function (img, i) {
@@ -203,7 +208,7 @@
         return initMobileHistoria();
       });
 
-      mm.add('(min-width: 769px)', function () {
+      mm.add('(min-width: 901px)', function () {
         var tl = initDesktopHistoria();
         return function () {
           if (tl.scrollTrigger) tl.scrollTrigger.kill();
