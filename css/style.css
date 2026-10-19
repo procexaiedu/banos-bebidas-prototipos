@@ -146,7 +146,7 @@ p{margin:0 0 1rem;}
 
 .hero-figure{position:relative;display:flex;justify-content:center;align-items:center;}
 .hero-blob{
-  position:absolute;width:min(500px,100%);aspect-ratio:1/1;background:var(--yellow);
+  position:absolute;width:min(640px,112%);aspect-ratio:1/1;background:var(--yellow);
   border-radius:48% 52% 55% 45%/52% 48% 52% 48%;
   animation:blobMove 9s ease-in-out infinite;
   z-index:1;
