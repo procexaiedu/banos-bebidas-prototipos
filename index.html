@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="css/style.css?v=1792431822">
+<link rel="stylesheet" href="css/style.css?v=1792503225">
 </head>
 <body>
 
@@ -101,14 +101,21 @@
     </div>
     <div class="historia-text">
       <div class="historia-block">
+        <!-- imagem só do mobile: no desktop o efeito fica no .historia-media
+             sticky; no mobile o dono pediu sequência linear simples, sem
+             nenhum efeito de flutuar/grudar — imagem e texto só empilhados
+             no fluxo normal da página, rolando juntos como o resto do site -->
+        <img class="historia-block-img" src="assets/historia-prateleira.jpg" alt="Prateleira de bebidas em ambiente de adega">
         <h3>Uma distribuidora de verdade</h3>
         <p>Somos um distribuidor de bebidas familiar e trabalhamos para proporcionar momentos de bem-estar saciando sua sede, seja no churrasco em casa, em uma comemoração com os amigos ou na confraternização do trabalho.</p>
       </div>
       <div class="historia-block">
+        <img class="historia-block-img" src="assets/historia-campinas.jpg" alt="Skyline de Campinas ao anoitecer">
         <h3>Crescendo com Campinas</h3>
         <p>Desde nossa fundação, nos dedicamos a trazer alegria aos momentos de celebração e descontração, evoluindo ao longo dos anos como um parceiro confiável no fornecimento de bebidas de excelência para Campinas e região.</p>
       </div>
       <div class="historia-block">
+        <img class="historia-block-img" src="assets/historia-atendimento.jpg" alt="Aperto de mãos representando confiança no atendimento">
         <h3>Compromisso com você</h3>
         <p>Nossa dedicação e compromisso é com a sua satisfação. Trabalhamos para nos tornarmos a escolha número um de nossos clientes. Com ótimos preços, produtos cuidadosamente selecionados e um atendimento impecável, estamos prontos para satisfazer suas necessidades e superar suas expectativas.</p>
       </div>
@@ -515,6 +522,6 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="js/main.js?v=1792431822"></script>
+<script src="js/main.js?v=1792503225"></script>
 </body>
 </html>

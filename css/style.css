@@ -275,50 +275,30 @@ p{margin:0 0 1rem;}
 .historia-block h3{font-size:1.9rem;color:var(--black);margin-bottom:16px;font-family:var(--font-title);}
 .historia-block p{font-size:1.08rem;line-height:1.65;color:#2b2b2b;}
 .historia-block:last-child{margin-bottom:55vh;}
+.historia-block-img{display:none;} /* só aparece no mobile, ver media query abaixo */
 
-/* mobile (até 900px — bloco ÚNICO, de propósito: dois blocos separados
-   (768 e 900) deixavam um buraco onde o CSS já virava "single column" mas
-   o JS (que usava 768px) ainda rodava o pin do GSAP, misturando layout
-   mobile com pin de desktop — era exatamente o "imagem solta rolando e
-   sobrepondo" relatado): troca o pin do GSAP (instável em navegadores
-   mobile, com a barra de endereço colapsando e mudando a viewport) por um
-   sticky em CSS puro — a imagem fica fixa numa faixa enquanto os 3 blocos
-   de texto passam por baixo. A troca de imagem é feita via scroll-position
-   no js/main.js (sem pin de ScrollTrigger no mobile). Desktop (acima de
-   900px) continua usando o mesmo pin + crossfade de sempre. O JS usa
-   EXATAMENTE este mesmo breakpoint (900px) — ver MOBILE_QUERY em main.js. */
+/* mobile (até 900px): o dono pediu explicitamente SEM nenhum efeito de
+   imagem flutuando/grudando (nada de sticky/pin) — é pra ser uma sequência
+   simples e linear, tudo no fluxo normal da página, rolando junto com o
+   resto: imagem 1 -> texto 1 -> imagem 2 -> texto 2 -> imagem 3 -> texto 3.
+   Por isso aqui a gente ESCONDE o .historia-media (o container sticky com
+   crossfade usado só no desktop) e mostra uma <img> simples e estática
+   dentro de cada .historia-block (ver historia-block-img no HTML) — nada
+   de JS, nada de scroll listener, só imagem e texto empilhados normalmente. */
 @media (max-width:900px){
-  .historia-frame::before{width:52%;left:20px;top:-14px;height:12px;}
-  .historia-frame .badge-stamp{width:76px;height:76px;bottom:-12px;right:-14px;}
-  .badge-stamp img{width:38px;}
-  .historia-block{max-width:100%;}
-  /* .section tem overflow:hidden global (linha ~39), o que quebra
-     position:sticky dos descendentes (o ancestral com overflow!=visible
-     vira o "scroll container" de referência, e como quem rola de fato é o
-     body, não essa section, o sticky nunca gruda). CONFIRMADO POR TESTE:
-     overflow-x:hidden sozinho NÃO basta — o browser normaliza overflow-y
-     pra "auto" quando só um eixo é visible (spec CSS), e "auto" ainda cria
-     um scroll container próprio que quebra o sticky do mesmo jeito que
-     "hidden". Só "overflow:visible" nos DOIS eixos resolve de fato (o
-     corte horizontal em mobile já é garantido pelo body, que tem
-     overflow-x:hidden global). */
-  .historia.section{overflow:visible;}
   .historia-row{display:block;}
-  .historia-media{
-    position:sticky;top:72px;height:46vh;padding:16px 28px 26px;margin-bottom:0;z-index:1;
-    overflow:visible; /* a base tem overflow:hidden (p/ conter o img-stack no
-      desktop) — no mobile isso corta o selo/fita que vazam de propósito pra
-      fora de .historia-frame; o próprio .img-stack já tem overflow:hidden
-      (linha ~248), então as fotos continuam contidas certinho mesmo assim */
-  }
-  .historia-frame{width:min(320px,86%);height:36vh;transform:rotate(-1deg);}
-  .historia-frame img{transition:opacity .45s ease;}
+  .historia-media{display:none;}
   .historia-text{display:flex;flex-direction:column;gap:0;padding:0 20px 36px;}
   .historia-block{
-    min-height:58vh;display:flex;flex-direction:column;justify-content:center;
-    padding:26px 0;margin-bottom:0;
+    max-width:100%;display:flex;flex-direction:column;
+    padding:0 0 40px;margin-bottom:0;
   }
-  .historia-block:last-child{margin-bottom:0;}
+  .historia-block:last-child{padding-bottom:0;}
+  .historia-block-img{
+    display:block;width:100%;height:54vw;max-height:300px;object-fit:cover;
+    border-radius:14px 54px 14px 54px;margin-bottom:20px;
+    box-shadow:10px 12px 0 0 var(--yellow), 0 6px 0 0 var(--black);
+  }
 }
 
 /* ============================================================

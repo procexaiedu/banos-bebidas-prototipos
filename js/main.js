@@ -87,88 +87,21 @@
      de imagem é feita por um IntersectionObserver simples, sem depender do
      pin do ScrollTrigger. */
   function initHistoria() {
+    // MOBILE (até 900px): não há mais NENHUM efeito aqui — o dono pediu
+    // explicitamente uma sequência linear simples, sem a imagem flutuar ou
+    // grudar durante o scroll. O HTML já tem uma <img> estática
+    // (.historia-block-img) dentro de cada .historia-block, e o CSS (ver
+    // style.css ~linha 279) esconde o .historia-media (container sticky)
+    // inteiro nesse breakpoint. Então não precisa de nenhum JS no mobile:
+    // é só imagem+texto empilhados no fluxo normal da página, como o resto
+    // do site. Esta função agora só cuida do efeito de pin+crossfade do
+    // DESKTOP (acima de 900px).
     var row = document.querySelector('.historia-row');
     var media = document.querySelector('.historia-media');
     // escopo em .img-stack (não .historia-media), senão pega também o <img>
-    // do selo .badge-stamp e desalinha os índices do crossfade (4 imgs em
-    // vez de 3, fazendo a 2ª/3ª foto nunca ativarem de verdade)
+    // do selo .badge-stamp e desalinha os índices do crossfade
     var images = document.querySelectorAll('.historia-frame .img-stack img');
-    var blocks = document.querySelectorAll('.historia-block');
-    if (!row || !media || !images.length || !blocks.length) return;
-
-    // MESMO breakpoint do CSS (ver style.css ~linha 279): um descompasso
-    // entre o breakpoint do JS e o do layout CSS deixava uma faixa de
-    // largura onde o CSS já virava mobile (coluna única) mas o JS ainda
-    // rodava o pin do GSAP — causava a imagem "solta", rolando e
-    // sobrepondo em vez de ficar fixa.
-    var MOBILE_QUERY = '(max-width: 900px)';
-
-    function activateImage(index) {
-      images.forEach(function (img, i) {
-        img.classList.toggle('is-active', i === index);
-      });
-    }
-
-    function initMobileHistoria() {
-      // garante que nenhuma opacity inline deixada pelo GSAP (timeline do
-      // desktop) atrapalhe o crossfade por classe no mobile
-      images.forEach(function (img) { img.style.opacity = ''; });
-
-      // BUG relatado: só a 1ª foto aparecia, as outras 2 nunca trocavam.
-      // Causa: a troca dependia de um IntersectionObserver com um único
-      // threshold (0.5) + rootMargin que encolhia a "janela" de observação.
-      // Como a imagem é sticky e ocupa uma faixa fixa no topo, o espaço
-      // realmente visível pra cada bloco de texto é bem menor que a altura
-      // do próprio bloco (min-height:58vh) — então a razão de interseção
-      // de um bloco nunca alcançava 0.5 (o cálculo dependia da altura real
-      // do bloco vs. o tamanho do viewport, que varia com texto/fonte/
-      // tamanho de tela), e o callback nunca disparava de novo pros blocos
-      // 2 e 3. Resultado: ficava preso na 1ª imagem pra sempre.
-      //
-      // Troca por uma lógica mais simples e robusta: a cada scroll (com
-      // throttle via rAF), comparamos a posição de TODOS os blocos e
-      // ativamos sempre o que estiver mais perto de uma linha de
-      // referência logo abaixo da imagem fixa. Não depende de altura de
-      // bloco, de threshold, nem de rootMargin — funciona em qualquer
-      // tamanho de tela/fonte.
-      var current = -1;
-      var ticking = false;
-
-      function pickClosestBlock() {
-        ticking = false;
-        var referenceY = window.innerHeight * 0.55;
-        var bestIdx = 0;
-        var bestDist = Infinity;
-        blocks.forEach(function (b, i) {
-          var r = b.getBoundingClientRect();
-          var center = r.top + r.height / 2;
-          var dist = Math.abs(center - referenceY);
-          if (dist < bestDist) { bestDist = dist; bestIdx = i; }
-        });
-        if (bestIdx !== current) {
-          current = bestIdx;
-          activateImage(bestIdx);
-        }
-      }
-
-      function onScrollOrResize() {
-        if (ticking) return;
-        ticking = true;
-        requestAnimationFrame(pickClosestBlock);
-      }
-
-      pickClosestBlock();
-      window.addEventListener('scroll', onScrollOrResize, { passive: true });
-      window.addEventListener('resize', onScrollOrResize, { passive: true });
-
-      // cleanup: usado pelo gsap.matchMedia quando a viewport deixa de
-      // bater com a media query mobile (ex: usuário gira o aparelho ou
-      // redimensiona a janela pra acima de 768px)
-      return function () {
-        window.removeEventListener('scroll', onScrollOrResize);
-        window.removeEventListener('resize', onScrollOrResize);
-      };
-    }
+    if (!row || !media || !images.length) return;
 
     function initDesktopHistoria() {
       var n = images.length;
@@ -201,13 +134,11 @@
       return tl;
     }
 
+    // MESMO breakpoint do CSS que esconde .historia-media (ver style.css):
+    // abaixo disso não existe mais pin nenhum, a imagem do desktop fica
+    // display:none e quem aparece é a <img> estática de cada bloco.
     if (hasGsap && window.ScrollTrigger) {
       var mm = gsap.matchMedia();
-
-      mm.add(MOBILE_QUERY, function () {
-        return initMobileHistoria();
-      });
-
       mm.add('(min-width: 901px)', function () {
         var tl = initDesktopHistoria();
         return function () {
@@ -215,9 +146,7 @@
           tl.kill();
         };
       });
-    } else if (window.matchMedia(MOBILE_QUERY).matches) {
-      initMobileHistoria();
-    } else {
+    } else if (window.matchMedia('(min-width: 901px)').matches) {
       images[0].classList.add('is-active');
     }
   }
