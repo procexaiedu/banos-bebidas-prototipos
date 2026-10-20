@@ -158,14 +158,15 @@ p{margin:0 0 1rem;}
 
 .hero-figure{position:relative;display:flex;justify-content:center;align-items:center;}
 .hero-blob{
-  position:absolute;width:min(640px,112%);aspect-ratio:1/1;background:var(--yellow);
-  border-radius:48% 52% 55% 45%/52% 48% 52% 48%;
+  position:absolute;width:min(760px,128%);aspect-ratio:1/1;background:var(--yellow);
+  border-radius:62% 38% 57% 43%/45% 61% 39% 55%;
   animation:blobMove 9s ease-in-out infinite;
   z-index:1;
 }
 @keyframes blobMove{
-  0%,100%{border-radius:48% 52% 55% 45%/52% 48% 52% 48%;}
-  50%{border-radius:55% 45% 48% 52%/45% 55% 45% 55%;}
+  0%,100%{border-radius:62% 38% 57% 43%/45% 61% 39% 55%;}
+  33%{border-radius:41% 59% 64% 36%/58% 42% 58% 42%;}
+  66%{border-radius:55% 45% 35% 65%/37% 55% 45% 63%;}
 }
 .hero-caricatura-float{
   position:relative;z-index:2;width:min(440px,92%);
@@ -206,7 +207,7 @@ p{margin:0 0 1rem;}
    próprio pro telefone e pro "role", que se sobrepunham aos botões.
    Não altera nada acima de 768px (desktop/tablet seguem a regra de 900px acima). */
 @media (max-width:768px){
-  .hero-blob{width:min(220px,62%);}
+  .hero-blob{width:min(290px,78%);}
   .hero-caricatura-float{width:min(190px,54%);}
   .hero-halftone{width:90px;height:90px;}
   .hero-figure{margin-bottom:6px;}
@@ -230,7 +231,7 @@ p{margin:0 0 1rem;}
    2. NOSSA HISTÓRIA
    ============================================================ */
 .historia{background:var(--cream);padding:40px 0 0;}
-.historia-head{padding:70px 0 10px;text-align:center;}
+.historia-head{padding:48px 0 10px;text-align:center;}
 .historia-head h2{font-size:clamp(2.4rem,5vw,3.6rem);color:var(--black);}
 .historia-head .eyebrow{color:var(--teal);} /* único uso mínimo do petróleo, letras pequenas */
 
@@ -304,8 +305,8 @@ p{margin:0 0 1rem;}
 /* ============================================================
    3. CATÁLOGO — esteiras
    ============================================================ */
-.catalogo{background:var(--white);padding:90px 0;}
-.catalogo-head{text-align:center;margin-bottom:50px;}
+.catalogo{background:var(--white);padding:64px 0;}
+.catalogo-head{text-align:center;margin-bottom:36px;}
 .catalogo-head h2{font-size:clamp(2.4rem,5vw,3.6rem);}
 .catalogo-head p{max-width:560px;margin:14px auto 0;color:#444;font-size:1.05rem;}
 
@@ -353,18 +354,26 @@ p{margin:0 0 1rem;}
    4. NÚMEROS — glassmorphism
    ============================================================ */
 .numeros{
-  position:relative;padding:120px 0;color:var(--white);
+  position:relative;padding:85px 0;color:var(--white);
   background:linear-gradient(160deg, rgba(17,17,17,.88), rgba(17,17,17,.72)), url('../assets/foto-03.jpg') center/cover no-repeat;
 }
 .numeros::before{
   content:'';position:absolute;inset:0;
   background:linear-gradient(135deg, rgba(237,206,58,.18), transparent 55%);
 }
-.numeros-head{text-align:center;max-width:620px;margin:0 auto 60px;position:relative;z-index:2;}
+/* as seams de cima/baixo (seam-gradient) terminam em preto sólido #111111,
+   mas a seção em si mostra a foto crua logo ali — sem transição real, só
+   a aparência de "corte". Esse fade escurece as bordas da própria seção até
+   preto puro, continuando o degradê da seam de forma integrada. */
+.numeros::after{
+  content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(to bottom, #111111 0%, transparent 22%, transparent 78%, #111111 100%);
+}
+.numeros-head{text-align:center;max-width:620px;margin:0 auto 42px;position:relative;z-index:2;}
 .numeros-head h2{font-size:clamp(2.2rem,4.6vw,3.2rem);color:var(--white);}
 .numeros-head p{color:#ddd;margin-top:12px;}
 
-.glass-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;position:relative;z-index:2;margin-bottom:60px;}
+.glass-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;position:relative;z-index:2;margin-bottom:42px;}
 .glass-card{
   background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);
   border-radius:22px;padding:38px 26px;text-align:center;position:relative;overflow:hidden;
@@ -405,8 +414,8 @@ p{margin:0 0 1rem;}
 /* ============================================================
    5. DIFERENCIAIS — stepper/tabs
    ============================================================ */
-.diferenciais{background:var(--yellow);padding:100px 0;}
-.diferenciais-head{text-align:center;max-width:620px;margin:0 auto 54px;}
+.diferenciais{background:var(--yellow);padding:72px 0;}
+.diferenciais-head{text-align:center;max-width:620px;margin:0 auto 38px;}
 .diferenciais-head h2{font-size:clamp(2.2rem,4.6vw,3.2rem);color:var(--black);}
 .diferenciais-head p{color:#1c1c1c;margin-top:12px;}
 
@@ -500,7 +509,7 @@ p{margin:0 0 1rem;}
    7. PEÇA JÁ — CTA final
    ============================================================ */
 .cta-final{
-  background:var(--yellow);padding:110px 0;text-align:center;position:relative;overflow:hidden;
+  background:var(--yellow);padding:78px 0;text-align:center;position:relative;overflow:hidden;
 }
 .cta-final h2{
   font-size:clamp(2.8rem,8vw,5.4rem);color:var(--black);line-height:1;margin-bottom:18px;
@@ -537,8 +546,8 @@ p{margin:0 0 1rem;}
 /* ============================================================
    8. BLOG
    ============================================================ */
-.blog{background:var(--cream);padding:100px 0;}
-.blog-head{text-align:center;max-width:600px;margin:0 auto 50px;}
+.blog{background:var(--cream);padding:72px 0;}
+.blog-head{text-align:center;max-width:600px;margin:0 auto 36px;}
 .blog-head h2{font-size:clamp(2.2rem,4.6vw,3.2rem);}
 .blog-head p{color:#444;margin-top:12px;}
 
@@ -563,7 +572,7 @@ p{margin:0 0 1rem;}
 /* ============================================================
    9. MAPA
    ============================================================ */
-.mapa{background:var(--black);color:var(--white);padding:100px 0;}
+.mapa{background:var(--black);color:var(--white);padding:72px 0;}
 .mapa-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;}
 .mapa-copy .eyebrow{color:var(--yellow);}
 .mapa-copy h2{color:var(--white);font-size:clamp(2.2rem,4.6vw,3.2rem);margin:14px 0 22px;}
@@ -610,12 +619,24 @@ p{margin:0 0 1rem;}
 .reveal.in{opacity:1;transform:none;}
 
 /* ============================================================
-   WHATSAPP FLUTUANTE — fixo em todas as páginas
+   REDES SOCIAIS FLUTUANTES — fixo em todas as páginas
    ============================================================ */
-.whats-float{
+.social-float{
   position:fixed;right:28px;bottom:28px;z-index:900;
-  display:flex;align-items:center;justify-content:flex-end;
+  display:flex;flex-direction:column;align-items:flex-end;gap:16px;
 }
+.whats-float,.insta-float{position:relative;display:flex;align-items:center;justify-content:flex-end;}
+.insta-float a{
+  position:relative;z-index:2;
+  width:60px;height:60px;border-radius:50%;
+  background:radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+  border:3px solid var(--black);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 10px 24px rgba(0,0,0,.3);
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s ease;
+}
+.insta-float a:hover{transform:scale(1.08);box-shadow:0 14px 30px rgba(0,0,0,.35);}
+.insta-float-icon{width:28px;height:28px;position:relative;z-index:1;}
 .whats-float a{
   position:relative;z-index:2;
   width:60px;height:60px;border-radius:50%;
@@ -645,12 +666,13 @@ p{margin:0 0 1rem;}
   transition:opacity .3s ease, transform .3s ease;
   box-shadow:0 8px 20px rgba(0,0,0,.25);
 }
-.whats-float:hover .whats-float-label{opacity:1;transform:translateX(0);}
+.whats-float:hover .whats-float-label,.insta-float:hover .whats-float-label{opacity:1;transform:translateX(0);}
 
 @media (max-width:600px){
-  .whats-float{right:16px;bottom:16px;}
-  .whats-float a{width:52px;height:52px;}
+  .social-float{right:16px;bottom:16px;gap:12px;}
+  .whats-float a,.insta-float a{width:52px;height:52px;}
   .whats-float-icon{width:26px;height:26px;}
+  .insta-float-icon{width:24px;height:24px;}
   .whats-float-label{display:none;}
 }
 
