@@ -240,25 +240,11 @@
       return;
     }
 
-    // trim de segurança: os primeiros instantes do clipe de stock mostram a água
-    // "errando" o copo antes de encher corretamente. Pulamos esse trecho inicial
-    // assim que o vídeo carrega e fazemos o loop reiniciar nesse mesmo ponto
-    // (em vez de voltar pro frame 0), pra sempre mostrar o copo já enchendo.
-    var SAFE_START = 1.8; // segundos a pular no início/reinício do loop
-    var LOOP_MARGIN = 0.3; // margem antes do fim pra disparar o reinício
-
-    video.addEventListener('loadedmetadata', function () {
-      if (video.duration && video.duration > SAFE_START + LOOP_MARGIN) {
-        try { video.currentTime = SAFE_START; } catch (e) {}
-      }
-    });
-
-    video.addEventListener('timeupdate', function () {
-      if (video.duration && video.duration > SAFE_START + LOOP_MARGIN &&
-          video.currentTime >= video.duration - LOOP_MARGIN) {
-        try { video.currentTime = SAFE_START; } catch (e) {}
-      }
-    });
+    // (sem trim artificial aqui: o vídeo atual "Glass filling with water" já
+    // mostra o copo enchendo de forma limpa desde o frame 0 — um trim fixo
+    // calibrado pra um clipe antigo estava pulando pro MEIO da animação de
+    // encher deste vídeo novo, causando o efeito de "começa cheio e reenche"
+    // a cada loop. O `loop` nativo do <video> já cuida de reiniciar do zero.)
 
     // alguns navegadores exigem o play() programático mesmo com autoplay+muted
     var tryPlay = function () { video.play().catch(function () {}); };
