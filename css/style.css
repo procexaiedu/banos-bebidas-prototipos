@@ -154,7 +154,12 @@ p{margin:0 0 1rem;}
 }
 .hero-lead{max-width:460px;font-size:1.1rem;color:#e9e9e9;margin-bottom:34px;}
 .hero-actions{display:flex;flex-wrap:wrap;gap:16px;align-items:center;}
-.hero-phone{font-weight:700;letter-spacing:.03em;color:var(--white);opacity:.85;}
+/* .hero-phone era <span> (display:inline) sem margem no desktop — ficava
+   colado/sobreposto embaixo dos botões. Agora é um bloco próprio
+   (.hero-contact) com espaço de verdade acima, incluindo o horário. */
+.hero-contact{display:flex;flex-direction:column;gap:6px;margin-top:30px;}
+.hero-phone{display:block;font-weight:700;letter-spacing:.03em;font-size:1.05rem;color:var(--white);opacity:.9;}
+.hero-hours{display:block;font-size:.85rem;color:#c9c9c9;opacity:.85;}
 
 .hero-figure{position:relative;display:flex;justify-content:center;align-items:center;}
 .hero-blob{
@@ -183,48 +188,30 @@ p{margin:0 0 1rem;}
   background-size:12px 12px;opacity:.5;top:-10px;right:0;z-index:0;
 }
 
-.scroll-hint{
-  position:absolute;bottom:34px;left:50%;transform:translateX(-50%);
-  display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--yellow);
-}
-.scroll-hint .line{width:2px;height:46px;background:linear-gradient(to bottom, var(--yellow), transparent);
-  overflow:hidden;position:relative;}
-.scroll-hint .line::after{
-  content:'';position:absolute;top:0;left:0;width:100%;height:40%;background:var(--white);
-  animation:scrollLine 2.1s ease-in-out infinite;
-}
-@keyframes scrollLine{0%{top:-40%;}100%{top:100%;}}
-.scroll-hint span{font-size:.65rem;text-transform:uppercase;letter-spacing:.2em;}
-
 @media (max-width:900px){
   .hero-grid{grid-template-columns:1fr;text-align:center;}
   .hero-lead{margin-left:auto;margin-right:auto;}
   .hero-actions{justify-content:center;}
   .hero-figure{order:-1;margin-bottom:10px;}
+  .hero-contact{align-items:center;}
 }
 
 /* mobile (até 768px): reduz a figura (estava enorme) e dá espaço vertical
-   próprio pro telefone e pro "role", que se sobrepunham aos botões.
-   Não altera nada acima de 768px (desktop/tablet seguem a regra de 900px acima). */
+   próprio pro telefone e pro horário, que se sobrepunham aos botões. */
 @media (max-width:768px){
   .hero-blob{width:min(290px,78%);}
   .hero-caricatura-float{width:min(190px,54%);}
   .hero-halftone{width:90px;height:90px;}
   .hero-figure{margin-bottom:6px;}
-  /* mais respiro entre o telefone e os botões "Fazer pedido"/"Conhecer a
-     Baños" no mobile (20px ainda ficava grudado) + uma linha fina pra
-     separar visualmente os dois blocos. Só nesta media query (<=768px);
-     acima disso o telefone continua sem margem/separador, como sempre. */
-  .hero-phone{
-    display:block;margin-top:40px;padding-top:16px;position:relative;
+  /* mais respiro entre o bloco telefone+horário e os botões "Fazer pedido"/
+     "Conhecer a Baños" no mobile, com uma linha fina separando os dois. */
+  .hero-contact{
+    margin-top:40px;padding-top:16px;position:relative;align-items:center;
   }
-  .hero-phone::before{
+  .hero-contact::before{
     content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
     width:52px;height:2px;background:rgba(255,255,255,.3);border-radius:2px;
   }
-  /* sem espaço vertical sobrando pro scroll-hint sem sobrepor telefone/botões:
-     remove do fluxo mobile (ele é só decorativo, aria-hidden) */
-  .scroll-hint{display:none;}
 }
 
 /* ============================================================
