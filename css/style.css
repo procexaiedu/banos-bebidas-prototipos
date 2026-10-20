@@ -405,19 +405,26 @@ p{margin:0 0 1rem;}
 /* .reel-embed: o embed oficial do Instagram vem dentro de um iframe de
    outro domínio — não dá pra "editar" o que tem lá dentro (cabeçalho de
    perfil, barra de curtir/comentar), só cortar visualmente por fora com
-   overflow:hidden. O dono pediu pra sumir com o cabeçalho de cima E a barra
-   de like/comentário de baixo, deixando só o vídeo + o link "View more on
-   Instagram". Valores calibrados pela proporção vista num print real (card
-   ~235px de largura): header ~80px fixo, footer (like+comentário) ~105px
-   fixo — esses dois NÃO escalam com a largura do card. Só o vídeo cresce
-   proporcionalmente; max-height recalculado para a largura maior (300px)
-   pedida depois. São pixels ESTIMADOS — conferir visualmente. */
+   overflow:hidden. BUG CORRIGIDO: um max-height FIXO em px (calibrado pro
+   card de 300px do desktop) não cortava nada no mobile, porque lá o grid
+   encolhe o card (card mais estreito = vídeo mais baixo, já que o vídeo
+   escala com a largura), então vídeo+link ficavam MENORES que o max-height
+   fixo e a barra de like/comentário reaparecia por baixo. Trocado pelo
+   truque clássico de "altura responsiva": height:0 + padding-top em % (que
+   o CSS calcula sobre a LARGURA do próprio elemento) cria uma caixa cuja
+   altura visível é sempre proporcional à largura real do card, em
+   QUALQUER tamanho de tela — ~117% da largura (proporção do vídeo) + 41px
+   fixos (a linha do link, que não escala). O cabeçalho continua escondido
+   com o iframe deslocado pra cima (top:-80px), agora via position:absolute
+   pra não interferir no cálculo de altura do height:0. Valores ESTIMADOS a
+   partir de um print real — conferir visualmente em desktop E mobile. */
 .reel-card.reel-embed{
   aspect-ratio:auto;padding:0;background:rgba(0,0,0,.25);
-  max-height:395px;
+  height:0;padding-top:calc(117.4% + 41px);position:relative;
 }
 .reel-card.reel-embed .instagram-media{
-  margin:-80px 0 0 !important;width:100% !important;min-width:0 !important;border-radius:20px;
+  position:absolute;top:-80px;left:0;right:0;
+  width:100% !important;min-width:0 !important;border-radius:20px;
 }
 .reel-card.reel-embed iframe{border-radius:20px;}
 
