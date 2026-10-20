@@ -402,6 +402,14 @@ p{margin:0 0 1rem;}
 }
 .reel-card small{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;opacity:.8;text-align:center;padding:0 10px;}
 
+/* .reel-embed: o embed oficial do Instagram (iframe gerado pelo embed.js) tem
+   altura/largura próprias que ele mesmo calcula — diferente do placeholder
+   fixo 9:16 de cima. Soltamos o aspect-ratio forçado e deixamos a altura ser
+   a do conteúdo real, só mantendo a largura/moldura glass do card. */
+.reel-card.reel-embed{aspect-ratio:auto;padding:0;background:rgba(0,0,0,.25);}
+.reel-card.reel-embed .instagram-media{margin:0 !important;width:100% !important;min-width:0 !important;border-radius:20px;}
+.reel-card.reel-embed iframe{border-radius:20px;}
+
 @media (max-width:860px){
   .glass-grid{grid-template-columns:1fr;}
 }
