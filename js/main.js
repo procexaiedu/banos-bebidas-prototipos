@@ -169,9 +169,9 @@
         var progress = Math.min((ts - startTime) / duration, 1);
         var eased = 1 - Math.pow(1 - progress, 3);
         var val = Math.floor(start + (target - start) * eased);
-        el.textContent = val + suffix;
+        el.textContent = val.toLocaleString('pt-BR') + suffix;
         if (progress < 1) requestAnimationFrame(step);
-        else el.textContent = target + suffix;
+        else el.textContent = target.toLocaleString('pt-BR') + suffix;
       }
       requestAnimationFrame(step);
     }

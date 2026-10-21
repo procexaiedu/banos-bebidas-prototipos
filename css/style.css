@@ -350,7 +350,7 @@ p{margin:0 0 1rem;}
    ============================================================ */
 .numeros{
   position:relative;padding:85px 0;color:var(--white);
-  background:linear-gradient(160deg, rgba(17,17,17,.88), rgba(17,17,17,.72)), url('../assets/foto-03.jpg') center/cover no-repeat;
+  background:linear-gradient(160deg, rgba(17,17,17,.88), rgba(17,17,17,.72)), url('../assets/fachada-numeros.jpg') center/cover no-repeat;
 }
 .numeros::before{
   content:'';position:absolute;inset:0;
