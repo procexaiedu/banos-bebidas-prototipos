@@ -472,6 +472,9 @@
         <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DcduTc8xqwN/" data-instgrm-version="14"></blockquote>
       </div>
     </div>
+    <!-- carregado na abertura (como no protótipo aprovado) para os reels já
+         chegarem com a capa; o lazy-load deixava as caixas brancas -->
+    <script async src="https://www.instagram.com/embed.js"></script>
   </div>
 </section>
 
@@ -535,18 +538,12 @@
 <section class="agua section" id="agua">
   <div class="agua-media" aria-hidden="true">
     <!-- TODO: trocar por vídeo oficial licenciado da marca -->
-    <!-- só o poster na abertura; o <video> é criado pelo js/main.js no clique do play -->
-    <img class="agua-poster" src="assets/agua-poster.webp" alt="" width="1280" height="720" loading="lazy" decoding="async">
+    <!-- vídeo de fundo em loop; o js/main.js só põe o src quando a seção se
+         aproxima da tela, para não pesar a abertura da página -->
+    <video class="agua-video" autoplay muted loop playsinline preload="none" poster="assets/agua-poster.webp" data-src="assets/agua-video.mp4"></video>
     <div class="agua-overlay"></div>
     <div class="agua-noise"></div>
   </div>
-  <button type="button" class="agua-play" data-video="assets/agua-video.mp4" aria-label="Ver o vídeo da Acqua Nova">
-    <span class="agua-play-icon" aria-hidden="true">
-      <svg class="ic-play" viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z"/></svg>
-      <svg class="ic-pause" viewBox="0 0 24 24"><path d="M6 4h4.5v16H6zM13.5 4H18v16h-4.5z"/></svg>
-    </span>
-    <span class="agua-play-label">Ver o vídeo</span>
-  </button>
   <div class="wrap agua-content">
     <div class="agua-copy" data-reveal>
       <span class="eyebrow">Exclusividade Baños</span>
