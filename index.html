@@ -187,7 +187,7 @@
 <link rel="preload" href="fonts/barlow-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/barlow-700.woff2" as="font" type="font/woff2" crossorigin>
 
-<link rel="stylesheet" href="css/style.css?v=1792700001">
+<link rel="stylesheet" href="css/style.css?v=1792700003">
 </head>
 <body>
 
@@ -472,9 +472,8 @@
         <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DcduTc8xqwN/" data-instgrm-version="14"></blockquote>
       </div>
     </div>
-    <!-- carregado na abertura (como no protótipo aprovado) para os reels já
-         chegarem com a capa; o lazy-load deixava as caixas brancas -->
-    <script async src="https://www.instagram.com/embed.js"></script>
+    <!-- embed.js do Instagram: injetado pelo js/main.js (initInstagram) logo
+         depois do load ou no primeiro scroll/toque, fora da janela do FCP/LCP -->
   </div>
 </section>
 
@@ -710,6 +709,6 @@
 
 <script defer src="js/vendor/gsap.min.js"></script>
 <script defer src="js/vendor/ScrollTrigger.min.js"></script>
-<script defer src="js/main.js?v=1792700001"></script>
+<script defer src="js/main.js?v=1792700003"></script>
 </body>
 </html>
