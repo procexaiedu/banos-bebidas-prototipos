@@ -44,11 +44,14 @@
     if (!hasGsap) return;
     var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
     tl.from('.hero .eyebrow', { y: 20, opacity: 0, duration: 0.5 })
-      .from('.hero-title span', { y: 60, opacity: 0, duration: 0.55, stagger: 0.12 }, '-=0.25')
+      .from('.hero-title > span:not(.eyebrow)', { y: 60, opacity: 0, duration: 0.55, stagger: 0.12 }, '-=0.25')
       .from('.hero-lead', { y: 24, opacity: 0, duration: 0.45 }, '-=0.2')
       .from('.hero-actions > *', { y: 20, opacity: 0, duration: 0.4, stagger: 0.1, ease: 'back.out(1.4)' }, '-=0.15')
       .from('.hero-blob', { scale: 0, opacity: 0, duration: 0.7, ease: 'back.out(1.5)' }, '-=0.5')
-      .from('.hero-caricatura', { scale: 0.7, opacity: 0, y: 30, duration: 0.6, ease: 'back.out(1.6)' }, '-=0.45')
+      // sem opacity:0 aqui de propósito: a caricatura é o maior elemento da
+      // primeira tela (LCP). Escondê-la e fazer fade atrasava o LCP em ~3 s no
+      // celular; o "pop" de escala continua igual.
+      .from('.hero-caricatura', { scale: 0.7, y: 30, duration: 0.6, ease: 'back.out(1.6)' }, '-=0.45')
       .from('.hero-halftone', { opacity: 0, duration: 0.6 }, '-=0.3');
   }
   heroEntrance();
@@ -227,42 +230,103 @@
   }
   initStepper();
 
-  /* ---------- ÁGUA — vídeo de fundo em loop ---------- */
+  /* ---------- ÁGUA — vídeo só no clique ----------
+     Antes o <video> vinha com autoplay + preload="auto" e baixava 6 MB logo
+     na abertura da página (era o que mais pesava no carregamento). Agora a
+     seção mostra só o poster (.agua-poster) e o <video> é CRIADO aqui, no
+     primeiro clique do botão de play — sem clique, nenhum byte de vídeo. */
   function initAgua() {
-    var video = document.querySelector('.agua-video');
-    if (!video) return;
-    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var btn = document.querySelector('.agua-play');
+    var media = document.querySelector('.agua-media');
+    if (!btn || !media) return;
+    var video = null;
+    var label = btn.querySelector('.agua-play-label');
 
-    if (reduceMotion) {
-      // respeita preferência do usuário: mostra o poster parado em vez do loop
-      video.pause();
-      video.removeAttribute('autoplay');
-      return;
+    function setPlaying(on) {
+      btn.classList.toggle('is-playing', on);
+      btn.setAttribute('aria-label', on ? 'Pausar o vídeo da Acqua Nova' : 'Ver o vídeo da Acqua Nova');
+      if (label) label.textContent = on ? 'Pausar' : 'Ver o vídeo';
     }
 
-    // (sem trim artificial aqui: o vídeo atual "Glass filling with water" já
-    // mostra o copo enchendo de forma limpa desde o frame 0 — um trim fixo
-    // calibrado pra um clipe antigo estava pulando pro MEIO da animação de
-    // encher deste vídeo novo, causando o efeito de "começa cheio e reenche"
-    // a cada loop. O `loop` nativo do <video> já cuida de reiniciar do zero.)
+    function createVideo() {
+      video = document.createElement('video');
+      video.className = 'agua-video';
+      video.muted = true;
+      video.loop = true;
+      video.playsInline = true;
+      video.setAttribute('playsinline', '');
+      video.setAttribute('preload', 'none');
+      video.setAttribute('aria-hidden', 'true');
+      video.src = btn.getAttribute('data-video');
+      media.querySelector('.agua-poster').insertAdjacentElement('afterend', video);
+      video.addEventListener('playing', function () { video.classList.add('is-playing'); });
 
-    // alguns navegadores exigem o play() programático mesmo com autoplay+muted
-    var tryPlay = function () { video.play().catch(function () {}); };
-    if (video.readyState >= 2) tryPlay();
-    else video.addEventListener('loadeddata', tryPlay, { once: true });
-
-    // pausa o vídeo quando a seção sai da viewport, pra economizar recursos
-    if ('IntersectionObserver' in window) {
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) tryPlay();
-          else video.pause();
-        });
-      }, { threshold: 0.1 });
-      io.observe(video.closest('.agua'));
+      // pausa quando a seção sai da tela, pra economizar bateria/dados
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting && !video.paused) {
+              video.pause();
+              setPlaying(false);
+            }
+          });
+        }, { threshold: 0.1 }).observe(media.closest('.agua'));
+      }
     }
+
+    btn.addEventListener('click', function () {
+      if (!video) createVideo();
+      if (video.paused) {
+        video.play().then(function () { setPlaying(true); }).catch(function () {});
+      } else {
+        video.pause();
+        setPlaying(false);
+      }
+    });
   }
   initAgua();
+
+  /* ---------- NÚMEROS — embed do Instagram sob demanda ----------
+     O embed.js do Instagram (~250 KB + cookies de terceiros) só é carregado
+     quando a fileira de reels chega perto da tela. Os cards já têm altura
+     fixa no CSS, então o carregamento tardio não empurra o layout. */
+  function initInstagram() {
+    var row = document.querySelector('.reels-row');
+    if (!row) return;
+    var loaded = false;
+
+    // o iframe criado pelo Instagram vem sem title (exigência de acessibilidade)
+    function titleIframes() {
+      row.querySelectorAll('iframe').forEach(function (f) {
+        if (!f.title) f.title = 'Reel da Baños Bebidas no Instagram';
+      });
+    }
+
+    function load() {
+      if (loaded) return;
+      loaded = true;
+      if ('MutationObserver' in window) {
+        new MutationObserver(titleIframes).observe(row, { childList: true, subtree: true });
+      }
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.instagram.com/embed.js';
+      document.body.appendChild(s);
+    }
+
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        if (entries.some(function (e) { return e.isIntersecting; })) {
+          io.disconnect();
+          load();
+        }
+      }, { rootMargin: '600px 0px' });
+      io.observe(row);
+    } else {
+      load();
+    }
+  }
+  initInstagram();
 
   /* ---------- NÚMEROS — spotlight que segue o mouse nos cards ---------- */
   function initGlassSpotlight() {
