@@ -280,13 +280,45 @@
   }
   initAgua();
 
-  /* ---------- NÚMEROS — título nos iframes do Instagram ----------
-     O embed.js vem no index.html (carregado na abertura, como no protótipo,
-     para os reels já chegarem com a capa). Aqui só damos title ao iframe que
+  /* ---------- NÚMEROS — reels do Instagram ----------
+     O embed.js traz ~120 pedidos e 1,5 MB; na abertura derrubava o Lighthouse
+     mobile (87 -> 59). Só com IntersectionObserver perto da seção, quem rolava
+     rápido via as caixas vazias (o embed leva ~1 s para montar). Meio-termo:
+     carrega no primeiro scroll/toque/mouse/tecla ou, sem interação, alguns
+     segundos depois do load, o que vier antes. Fica fora do FCP/LCP e monta
+     bem antes de alguém chegar em #numeros. Também damos title ao iframe que
      o Instagram cria, que vem sem (exigência de acessibilidade). */
   function initInstagram() {
     var row = document.querySelector('.reels-row');
     if (!row) return;
+
+    var loaded = false;
+    var triggers = ['scroll', 'touchstart', 'pointermove', 'keydown', 'wheel'];
+    function loadEmbed() {
+      if (loaded) return;
+      loaded = true;
+      triggers.forEach(function (ev) { window.removeEventListener(ev, loadEmbed); });
+      var s = document.createElement('script');
+      s.src = 'https://www.instagram.com/embed.js';
+      s.async = true;
+      s.onload = function () {
+        if (window.instgrm && window.instgrm.Embeds) window.instgrm.Embeds.process();
+      };
+      document.body.appendChild(s);
+    }
+    triggers.forEach(function (ev) {
+      window.addEventListener(ev, loadEmbed, { once: true, passive: true });
+    });
+    // sem interação: espera 4 s depois do load (com 1,5 s o Lighthouse ainda
+    // pegava o embed na medição e o TBT subia ~150 ms)
+    function afterLoad() {
+      setTimeout(function () {
+        if ('requestIdleCallback' in window) window.requestIdleCallback(loadEmbed, { timeout: 1500 });
+        else loadEmbed();
+      }, 4000);
+    }
+    if (document.readyState === 'complete') afterLoad();
+    else window.addEventListener('load', afterLoad, { once: true });
 
     function titleIframes() {
       row.querySelectorAll('iframe').forEach(function (f) {

@@ -445,7 +445,9 @@ p{margin:0 0 1rem;}
   position:absolute;top:-80px;left:0;right:0;
   width:100% !important;min-width:0 !important;border-radius:20px;
 }
-.reel-card.reel-embed iframe{border-radius:20px;}
+/* placeholder escuro enquanto o embed monta: o Instagram cria o iframe com
+   fundo branco inline, que piscava antes da capa chegar */
+.reel-card.reel-embed iframe{border-radius:20px;background:#111 !important;}
 
 @media (max-width:860px){
   .glass-grid{grid-template-columns:1fr;}
