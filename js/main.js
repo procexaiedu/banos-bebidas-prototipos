@@ -230,100 +230,73 @@
   }
   initStepper();
 
-  /* ---------- ÁGUA — vídeo só no clique ----------
-     Antes o <video> vinha com autoplay + preload="auto" e baixava 6 MB logo
-     na abertura da página (era o que mais pesava no carregamento). Agora a
-     seção mostra só o poster (.agua-poster) e o <video> é CRIADO aqui, no
-     primeiro clique do botão de play — sem clique, nenhum byte de vídeo. */
+  /* ---------- ÁGUA — vídeo de fundo em loop ----------
+     Igual ao protótipo aprovado (autoplay, mudo, em loop, sem clique), mas o
+     src só entra quando a seção está a ~1500px da tela: a abertura da página
+     não baixa o vídeo e ele já está tocando quando a pessoa chega na seção. */
   function initAgua() {
-    var btn = document.querySelector('.agua-play');
-    var media = document.querySelector('.agua-media');
-    if (!btn || !media) return;
-    var video = null;
-    var label = btn.querySelector('.agua-play-label');
+    var video = document.querySelector('.agua-video');
+    if (!video) return;
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    function setPlaying(on) {
-      btn.classList.toggle('is-playing', on);
-      btn.setAttribute('aria-label', on ? 'Pausar o vídeo da Acqua Nova' : 'Ver o vídeo da Acqua Nova');
-      if (label) label.textContent = on ? 'Pausar' : 'Ver o vídeo';
+    if (reduceMotion) {
+      // respeita preferência do usuário: mostra o poster parado em vez do loop
+      video.removeAttribute('autoplay');
+      return;
     }
 
-    function createVideo() {
-      video = document.createElement('video');
-      video.className = 'agua-video';
-      video.muted = true;
-      video.loop = true;
-      video.playsInline = true;
-      video.setAttribute('playsinline', '');
-      video.setAttribute('preload', 'none');
-      video.setAttribute('aria-hidden', 'true');
-      video.src = btn.getAttribute('data-video');
-      media.querySelector('.agua-poster').insertAdjacentElement('afterend', video);
-      video.addEventListener('playing', function () { video.classList.add('is-playing'); });
+    // alguns navegadores exigem o play() programático mesmo com autoplay+muted
+    var tryPlay = function () { video.play().catch(function () {}); };
 
-      // pausa quando a seção sai da tela, pra economizar bateria/dados
-      if ('IntersectionObserver' in window) {
-        new IntersectionObserver(function (entries) {
-          entries.forEach(function (entry) {
-            if (!entry.isIntersecting && !video.paused) {
-              video.pause();
-              setPlaying(false);
-            }
-          });
-        }, { threshold: 0.1 }).observe(media.closest('.agua'));
-      }
+    function loadVideo() {
+      if (video.getAttribute('src')) return;
+      video.src = video.getAttribute('data-src');
+      video.preload = 'auto';
+      video.load();
+      tryPlay();
     }
 
-    btn.addEventListener('click', function () {
-      if (!video) createVideo();
-      if (video.paused) {
-        video.play().then(function () { setPlaying(true); }).catch(function () {});
-      } else {
-        video.pause();
-        setPlaying(false);
+    if (!('IntersectionObserver' in window)) {
+      loadVideo();
+      return;
+    }
+
+    var section = video.closest('.agua');
+    new IntersectionObserver(function (entries, io) {
+      if (entries.some(function (e) { return e.isIntersecting; })) {
+        io.disconnect();
+        loadVideo();
       }
-    });
+    }, { rootMargin: '1500px 0px' }).observe(section);
+
+    // pausa o vídeo quando a seção sai da viewport, pra economizar recursos
+    new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!video.getAttribute('src')) return;
+        if (entry.isIntersecting) tryPlay();
+        else video.pause();
+      });
+    }, { threshold: 0.1 }).observe(section);
   }
   initAgua();
 
-  /* ---------- NÚMEROS — embed do Instagram sob demanda ----------
-     O embed.js do Instagram (~250 KB + cookies de terceiros) só é carregado
-     quando a fileira de reels chega perto da tela. Os cards já têm altura
-     fixa no CSS, então o carregamento tardio não empurra o layout. */
+  /* ---------- NÚMEROS — título nos iframes do Instagram ----------
+     O embed.js vem no index.html (carregado na abertura, como no protótipo,
+     para os reels já chegarem com a capa). Aqui só damos title ao iframe que
+     o Instagram cria, que vem sem (exigência de acessibilidade). */
   function initInstagram() {
     var row = document.querySelector('.reels-row');
     if (!row) return;
-    var loaded = false;
 
-    // o iframe criado pelo Instagram vem sem title (exigência de acessibilidade)
     function titleIframes() {
       row.querySelectorAll('iframe').forEach(function (f) {
         if (!f.title) f.title = 'Reel da Baños Bebidas no Instagram';
       });
     }
 
-    function load() {
-      if (loaded) return;
-      loaded = true;
-      if ('MutationObserver' in window) {
-        new MutationObserver(titleIframes).observe(row, { childList: true, subtree: true });
-      }
-      var s = document.createElement('script');
-      s.async = true;
-      s.src = 'https://www.instagram.com/embed.js';
-      document.body.appendChild(s);
-    }
-
-    if ('IntersectionObserver' in window) {
-      var io = new IntersectionObserver(function (entries) {
-        if (entries.some(function (e) { return e.isIntersecting; })) {
-          io.disconnect();
-          load();
-        }
-      }, { rootMargin: '600px 0px' });
-      io.observe(row);
-    } else {
-      load();
+    titleIframes();
+    if ('MutationObserver' in window) {
+      new MutationObserver(titleIframes).observe(row, { childList: true, subtree: true });
     }
   }
   initInstagram();
