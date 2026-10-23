@@ -1,0 +1,37 @@
+# Baños Bebidas
+
+> A Baños Bebidas é uma distribuidora de bebidas em Campinas/SP, com loja na Rua da Abolição, 1039, Ponte Preta. Entrega cervejas, destilados, vinhos, refrigerantes, sucos, águas e energéticos de mais de 40 marcas em todos os bairros de Campinas e em algumas cidades vizinhas da Região Metropolitana de Campinas, com frete e sem pedido mínimo. Pedidos pelo WhatsApp (19) 99426-2433.
+
+Dados principais:
+
+- Nome: Baños Bebidas (também escrito Banos Bebidas). Razão social: Distribuidora de Bebidas Banos LTDA. CNPJ 47.388.163/0001-57.
+- Endereço: Rua da Abolição, 1039, Ponte Preta, Campinas/SP, CEP 13041-445, Brasil.
+- Telefone e WhatsApp: +55 19 99426-2433.
+- Horário: segunda a sexta, 8h às 18h; sábados, domingos e feriados, 8h às 13h.
+- Área atendida: todos os bairros de Campinas e algumas cidades vizinhas (sob consulta), com entrega no mesmo dia.
+- Frete: pago pelo cliente, sem frete grátis; o valor depende da dificuldade de chegar ao endereço e sai mais barato quando a entrega fica no caminho de outra. Valor exato pelo WhatsApp.
+- Sem pedido mínimo. Retirada na loja disponível. Câmara fria: as bebidas podem sair geladas.
+- Pagamento: Pix, cartão e dinheiro, além de alguns vales-alimentação e vales-refeição (sob consulta).
+- Atacado: a partir de cerca de 5 a 10 fardos o pedido entra no preço de atacado.
+- Eventos: bebidas em consignado (o que sobra volta), com entrega e retirada, inclusive de madrugada.
+- Empresa familiar com 5 anos de mercado e mais de 1.000 clientes atendidos.
+- Atende casas, bares, restaurantes, comércios, empresas, festas e eventos.
+- Distribuição exclusiva da água mineral Acqua Nova na região de Campinas.
+- Instagram: https://www.instagram.com/banosbebidas
+
+## Páginas
+
+- [Início](https://www.banosbebidas.com.br/): quem é a Baños Bebidas, catálogo resumido, diferenciais, endereço e horário.
+- [Catálogo completo](https://www.banosbebidas.com.br/catalogo.html): todas as marcas por categoria (cervejas, destilados e vinhos, refrigerantes, sucos e chás, águas, isotônicos e energéticos).
+- [Onde estamos](https://www.banosbebidas.com.br/#contato): endereço, mapa e horário.
+
+## Blog
+
+- [Do happy hour à comemoração: um guia para escolher bebidas](https://www.banosbebidas.com.br/blog-guia-bebidas.html): cada categoria de bebida e a ocasião certa para ela.
+- [Churrasco, pizza ou jantar especial? Veja como escolher as bebidas](https://www.banosbebidas.com.br/blog-harmonizacao.html): harmonização de bebida com comida no dia a dia.
+- [Vai receber convidados? Um guia para planejar as bebidas do seu evento](https://www.banosbebidas.com.br/blog-planejar-evento.html): quantidade por convidado, variedade, gelo e armazenamento.
+- [Temperatura, armazenamento e conservação: cuide melhor das suas bebidas](https://www.banosbebidas.com.br/blog-conservacao.html): temperatura ideal, validade e cuidados com a embalagem.
+
+## Optional
+
+- [Conteúdo completo em texto](https://www.banosbebidas.com.br/llms-full.txt): versão em markdown com todas as informações da loja, as perguntas frequentes (entrega, frete, pagamento, atacado, eventos) e o resumo dos posts.

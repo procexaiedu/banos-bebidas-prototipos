@@ -3,6 +3,17 @@
    Bold, gráfico, cheio de energia. Amarelo + preto + branco.
    ============================================================ */
 
+/* fontes servidas do próprio site (antes vinham do Google Fonts, que
+   bloqueava a renderização com 2 conexões extras). Só o subset latin,
+   que cobre todo o português. */
+@font-face{font-family:'Abril Fatface';font-style:normal;font-weight:400;font-display:swap;src:url('../fonts/abril-fatface-400.woff2') format('woff2');}
+@font-face{font-family:'Barlow';font-style:normal;font-weight:400;font-display:swap;src:url('../fonts/barlow-400.woff2') format('woff2');}
+@font-face{font-family:'Barlow';font-style:italic;font-weight:400;font-display:swap;src:url('../fonts/barlow-400-italic.woff2') format('woff2');}
+@font-face{font-family:'Barlow';font-style:normal;font-weight:500;font-display:swap;src:url('../fonts/barlow-500.woff2') format('woff2');}
+@font-face{font-family:'Barlow';font-style:normal;font-weight:600;font-display:swap;src:url('../fonts/barlow-600.woff2') format('woff2');}
+@font-face{font-family:'Barlow';font-style:normal;font-weight:700;font-display:swap;src:url('../fonts/barlow-700.woff2') format('woff2');}
+@font-face{font-family:'Barlow';font-style:normal;font-weight:800;font-display:swap;src:url('../fonts/barlow-800.woff2') format('woff2');}
+
 :root{
   --yellow:#EDCE3A;
   --yellow-dark:#D9B819;
@@ -81,7 +92,7 @@ p{margin:0 0 1rem;}
 }
 .navbar .wrap{display:flex;align-items:center;justify-content:space-between;}
 .navbar.scrolled{background:rgba(17,17,17,.92);backdrop-filter:blur(8px);padding:10px 0;box-shadow:0 6px 24px rgba(0,0,0,.25);}
-.nav-logo img{height:40px;filter:brightness(0) invert(1);}
+.nav-logo img{height:40px;width:auto;filter:brightness(0) invert(1);}
 .nav-links{display:flex;gap:34px;align-items:center;}
 .nav-links a{
   font-weight:600;font-size:.92rem;text-transform:uppercase;letter-spacing:.04em;
@@ -146,6 +157,14 @@ p{margin:0 0 1rem;}
   margin:18px 0 22px;
 }
 .hero-title span{display:block;}
+/* o eyebrow "Distribuidora de bebidas em Campinas/SP" fica DENTRO do h1
+   (SEO local) mas com a mesma cara de antes, quando era um span solto
+   acima do título: mesma altura de linha e o mesmo respiro de 18px */
+.hero-title .eyebrow{line-height:19px;margin:0 0 18px;}
+.hero-title{margin-top:0;}
+/* "em" é um caractere a mais que o antigo "·": no celular o espaçamento
+   cai um pouco para continuar cabendo em uma linha só, como antes */
+@media (max-width:480px){.hero-title .eyebrow{letter-spacing:.12em;}}
 .hero-title .stroke{
   -webkit-text-stroke:3px var(--yellow);color:transparent;
 }
@@ -177,7 +196,7 @@ p{margin:0 0 1rem;}
   position:relative;z-index:2;width:min(440px,92%);
   animation:heroFloat 6s ease-in-out infinite;
 }
-.hero-caricatura{display:block;width:100%;filter:drop-shadow(0 20px 30px rgba(0,0,0,.35));}
+.hero-caricatura{display:block;width:100%;height:auto;filter:drop-shadow(0 20px 30px rgba(0,0,0,.35));}
 @keyframes heroFloat{
   0%,100%{transform:translateY(0) rotate(-1deg);}
   50%{transform:translateY(-16px) rotate(1deg);}
@@ -255,7 +274,7 @@ p{margin:0 0 1rem;}
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   text-align:center;transform:rotate(-8deg);box-shadow:0 10px 24px rgba(0,0,0,.25), 0 0 0 4px var(--black);
 }
-.badge-stamp img{width:48px;margin-bottom:3px;filter:none;}
+.badge-stamp img{width:48px;height:auto;margin-bottom:3px;filter:none;}
 .badge-stamp small{font-size:.5rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;line-height:1.1;}
 
 /* Desktop: cada bloco de texto ocupa um "slot" de 100vh, centralizado
@@ -332,7 +351,7 @@ p{margin:0 0 1rem;}
 .brand-card:hover{
   transform:translateY(-4px) scale(1.05);
 }
-.brand-card img{max-height:84px;max-width:100%;object-fit:contain;mix-blend-mode:multiply;}
+.brand-card img{width:auto;height:auto;max-height:84px;max-width:100%;object-fit:contain;mix-blend-mode:multiply;}
 
 .catalogo-cta{text-align:center;margin-top:40px;}
 
@@ -350,7 +369,7 @@ p{margin:0 0 1rem;}
    ============================================================ */
 .numeros{
   position:relative;padding:85px 0;color:var(--white);
-  background:linear-gradient(160deg, rgba(17,17,17,.88), rgba(17,17,17,.72)), url('../assets/fachada-numeros.jpg') center/cover no-repeat;
+  background:linear-gradient(160deg, rgba(17,17,17,.88), rgba(17,17,17,.72)), url('../assets/fachada-numeros.webp') center/cover no-repeat;
 }
 .numeros::before{
   content:'';position:absolute;inset:0;
@@ -488,10 +507,34 @@ p{margin:0 0 1rem;}
   padding:120px 0;position:relative;overflow:hidden;
 }
 .agua-media{position:absolute;inset:0;z-index:0;}
-.agua-video{
+.agua-video,
+.agua-poster{
   position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
   filter:saturate(1.15) brightness(.82) contrast(1.05);
 }
+/* o vídeo (670 KB) só é criado e baixado quando a pessoa clica no play;
+   até lá aparece o poster (um frame do próprio vídeo, ~19 KB) */
+.agua-video{opacity:0;transition:opacity .5s ease;}
+.agua-video.is-playing{opacity:1;}
+.agua-play{
+  position:absolute;z-index:3;right:12%;top:50%;transform:translateY(-50%);
+  display:inline-flex;align-items:center;gap:12px;
+  background:var(--yellow);color:var(--black);border:3px solid var(--black);border-radius:999px;
+  padding:12px 22px 12px 12px;cursor:pointer;
+  font-family:var(--font-body);font-weight:700;font-size:.85rem;text-transform:uppercase;letter-spacing:.04em;
+  box-shadow:6px 8px 0 rgba(0,0,0,.45);
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .25s;
+}
+.agua-play:hover{transform:translateY(-50%) scale(1.05);}
+.agua-play:focus-visible{outline:3px solid var(--white);outline-offset:4px;}
+.agua-play-icon{
+  width:40px;height:40px;border-radius:50%;background:var(--black);
+  display:flex;align-items:center;justify-content:center;flex:0 0 auto;
+}
+.agua-play-icon svg{width:16px;height:16px;fill:var(--yellow);}
+.agua-play .ic-pause{display:none;}
+.agua-play.is-playing .ic-play{display:none;}
+.agua-play.is-playing .ic-pause{display:block;}
 .agua-overlay{
   position:absolute;inset:0;
   background:
@@ -524,6 +567,9 @@ p{margin:0 0 1rem;}
   .agua{min-height:72vh;padding:90px 0;}
   .agua-copy{max-width:100%;text-align:center;margin:0 auto;}
   .agua-ph{margin-left:auto;margin-right:auto;}
+  .agua{padding-bottom:130px;}
+  .agua-play{right:auto;left:50%;top:auto;bottom:34px;transform:translateX(-50%);}
+  .agua-play:hover{transform:translateX(-50%) scale(1.05);}
 }
 
 /* ============================================================
@@ -616,9 +662,9 @@ p{margin:0 0 1rem;}
    ============================================================ */
 .footer{background:var(--black);color:var(--white);padding:70px 0 30px;}
 .footer-top{display:flex;justify-content:center;margin-bottom:50px;}
-.footer-top img{height:70px;filter:brightness(0) invert(1);}
+.footer-top img{height:70px;width:auto;filter:brightness(0) invert(1);}
 .footer-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:40px;padding-bottom:40px;border-bottom:1px solid rgba(255,255,255,.12);}
-.footer-col h4{font-family:var(--font-body);font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:.95rem;color:var(--yellow);margin-bottom:16px;}
+.footer-col h2{font-family:var(--font-body);font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:.95rem;color:var(--yellow);margin-bottom:16px;}
 .footer-col p{color:#ccc;font-size:.95rem;}
 .footer-col ul li{margin-bottom:10px;color:#ccc;font-size:.95rem;}
 .footer-col ul li a:hover{color:var(--yellow);}
@@ -739,7 +785,7 @@ p{margin:0 0 1rem;}
   transition:transform .2s, box-shadow .2s, border-color .2s;
 }
 .cat-item:hover{transform:translateY(-5px);box-shadow:6px 8px 0 var(--black);border-color:var(--black);}
-.cat-item img{height:70px;object-fit:contain;mix-blend-mode:multiply;}
+.cat-item img{height:70px;width:auto;object-fit:contain;mix-blend-mode:multiply;}
 .cat-item span{font-size:.8rem;font-weight:600;text-align:center;color:#333;}
 
 .cat-cta{
